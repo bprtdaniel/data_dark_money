@@ -1,6 +1,8 @@
 # This project is a collaboration of Daniel Boppert and Luca Vellage.
 
 Daniel: Scraper, Data preparation, Datawrapper Maps, writing
+
+
 Luca: HTML, CSS styling, formatting, writing
 
 
