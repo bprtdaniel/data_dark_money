@@ -11,9 +11,7 @@
     body {
       margin: 0;
       font-family: "Inter", Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top left, rgba(47, 86, 70, 0.24), transparent 34%),
-        linear-gradient(180deg, #111815 0%, #18221e 45%, #f4f1ea 100%);
+      background: #18221e;
       color: #1f2421;
     }
 
@@ -43,23 +41,27 @@
 
     .intro-scrolly {
       max-width: 760px;
-      margin: 0 auto;
-      padding: 0 24px 50px 24px;
+      margin: -60px auto 0 auto;
+      padding: 0 24px 300px 24px;
       color: #f4f1ea;
     }
 
     .intro-step {
-      min-height: 42vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 60px 0;
     }
 
     .intro-card {
-      max-width: 680px;
+      max-width: 860px;
       text-align: center;
       font-size: 1.25rem;
       line-height: 1.6;
+    }
+
+    .intro-card a {
+      color: #7ec8a0;
     }
 
     .intro-card .quote {
@@ -85,19 +87,52 @@
       padding: 40px 24px 0 24px;
     }
 
-    .scrolly::before {
-      content: "";
-      position: absolute;
+
+    .quote-sticky {
+      position: sticky;
       top: 0;
-      left: 24px;
-      right: 24px;
-      height: 2px;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(244, 241, 234, 0.65),
-        transparent
-      );
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      transition: opacity 1200ms ease;
+    }
+
+    .quote-step {
+      min-height: 35vh;
+    }
+
+    .quote-text {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+      line-height: 1.22;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      max-width: 760px;
+      padding: 0 24px;
+      margin: 0;
+    }
+
+    .quote-ending {
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .quote-ending::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: #ffffff;
+      transition: width 700ms ease 200ms;
+    }
+
+    .quote-ending.underlined::after {
+      width: 100%;
     }
 
     .steps {
@@ -158,9 +193,9 @@
 
     .map-sticky {
       position: sticky;
-      top: 24px;
-      height: calc(100vh - 48px);
-      min-height: 620px;
+      top: 50vh;
+      transform: translateY(-50%);
+      height: 700px;
       align-self: start;
     }
 
@@ -177,7 +212,7 @@
         0 0 0 6px rgba(250, 248, 241, 0.18);
 
       --overlay-x: 0px;
-      --overlay-y: -1px;
+      --overlay-y: -3px;
       --overlay-scale: 1;
     }
 
@@ -185,12 +220,14 @@
       position: absolute;
       inset: 0;
       width: 100%;
-      height: 100%;
+      height:100%;
       border: 0;
     }
 
     #map-base {
       z-index: 1;
+      opacity: 1;
+      transition: opacity 500ms ease;
     }
 
     #map-overlay {
@@ -198,13 +235,13 @@
       opacity: 0;
       transition: opacity 500ms ease;
       pointer-events: none;
-      transform: translate(var(--overlay-x), var(--overlay-y)) scale(var(--overlay-scale));
-      transform-origin: center center;
     }
 
-    #map-overlay.is-visible {
-      opacity: 1;
-      pointer-events: auto;
+    #map-highlight {
+      z-index: 3;
+      opacity: 0;
+      transition: opacity 500ms ease;
+      pointer-events: none;
     }
 
     .district-highlight {
@@ -225,18 +262,6 @@
     .oh09-highlight {
       right: 26%;
       top: 30%;
-    }
-
-    .highlight-ring {
-      width: 36px;
-      height: 36px;
-      border: 3px solid #315f49;
-      border-radius: 50%;
-      background: rgba(49, 95, 73, 0.08);
-      box-shadow:
-        0 0 0 6px rgba(49, 95, 73, 0.18),
-        0 0 20px rgba(49, 95, 73, 0.35);
-      animation: pulse-highlight 1.8s ease-in-out infinite;
     }
 
     .highlight-label {
@@ -289,22 +314,19 @@
   </section>
 
   <section class="intro-scrolly">
-    <div class="intro-step">
-      <div class="intro-card">
-        <p class="quote">“Donald Trump will work to lower your taxes, vote Trump.”</p>
-      </div>
-    </div>
 
-    <div class="intro-step">
-      <div class="intro-card">
-        <p class="quote">“Donald Trump will work to lower your taxes, that’s great!”</p>
-      </div>
+    <div class="quote-sticky">
+      <p class="quote-text">"Donald Trump will work to lower your taxes, <span class="quote-ending">vote Trump."</span></p>
     </div>
+    <div class="quote-step" data-state="q1"></div>
+    <div class="quote-step" data-state="q2"></div>
+    <div class="quote-step" data-state="q2-underline"></div>
 
-    <div class="intro-step">
+
+    <div class="intro-step" data-state="hide">
       <div class="intro-card">
         <p>
-          What is the difference between those sentences?
+          <strong>What is the difference between those sentences?</strong>
         </p>
         <p>
           According to U.S. campaign finance rules, the first is a direct endorsement of a candidate,
@@ -321,12 +343,10 @@
       <div class="intro-card">
         <p>
           Under U.S. tax law, a 501(c)(4) organization is a nonprofit organization operated for
-          social welfare purposes.
-        </p>
-        <p>
-          These groups can spend money in politics, but they are not required to disclose donors
+          social welfare purposes. These groups can spend money in politics, but they are not required to disclose donors
           in the same way traditional campaign committees or SuperPACs are.
         </p>
+
       </div>
     </div>
 
@@ -404,12 +424,12 @@
         </div>
       </div>
 
-      <div class="step" data-overlay="on" data-highlight="oh09">
+      <div class="step hold-step" data-overlay="on" data-highlight="oh09">
         <div class="step-card">
           <div class="step-label">06</div>
           <h2>Ohio’s 9th Congressional District</h2>
           <p>
-            In an incredinly close election, incumbent Marcy Kaptur held on by about 0.7 points or roughly 2000 votes.
+            In an incredibly close election, incumbent Marcy Kaptur held on by about 0.7 points or roughly 2000 votes.
             At the same time, OpenSecrets reports that 400.000 dollars of dark money were spent in OH-09.
             Half of that is classified as "For Democrats", while the other is labelled "Against Republicans"
           </p>
@@ -437,42 +457,123 @@
           frameborder="0">
         </iframe>
 
-        <div class="district-highlight oh09-highlight">
-          <div class="highlight-label">OH-09</div>
-          <div class="highlight-ring"></div>
-        </div>
+        <iframe
+          id="map-highlight"
+          class="dw-map"
+          title="OH-09 highlight"
+          src="https://datawrapper.dwcdn.net/orkss/1/"
+          scrolling="no"
+          frameborder="0">
+        </iframe>
       </div>
     </div>
   </section>
+
+  <section class="intro-scrolly">
+  <div class="intro-step">
+    <div class="intro-card">
+      <p><strong>Dark Money is exactly what it says.</strong></p> 
+      <p>It succeeds in circumventing many or all disclosure policies, designed to keep the political system free from corruption and foreign influence.</p>
+      <p>The system is designed to be complicated and opaque and 'Creative Accounting' and landmark judicial decisions like <a href="https://www.brennancenter.org/our-work/research-reports/citizens-united-explained">Citizens United</a> further flooded politics with money by removing campaign finance limits.</p> 
+      <p>While dark money may not be the tipping point in competitive races already afloat with cash, it uncovers the systems vulnerability.</p>
+    </div>
+  </div>
+</section>
 
   <section class="source-note">
     <p>Sources: OpenSecrets and Inside Elections House ratings via 270toWin as of October 31, 2024.</p>
   </section>
 
   <script>
-    const overlay = document.getElementById("map-overlay");
-    const highlight = document.querySelector(".oh09-highlight");
-    const steps = document.querySelectorAll(".step");
+    const mapBase = document.getElementById("map-base");
+      const overlay = document.getElementById("map-overlay");
+      const mapHighlight = document.getElementById("map-highlight");
+      const highlight = document.querySelector(".oh09-highlight");
+      const steps = document.querySelectorAll(".step");
 
-    const observer = new IntersectionObserver(
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const showOverlay = entry.target.dataset.overlay === "on";
+              const showHighlight = entry.target.dataset.highlight === "oh09";
+
+              mapBase.style.opacity = (showOverlay || showHighlight) ? "0" : "1";
+              overlay.style.opacity = showOverlay && !showHighlight ? "1" : "0";
+              overlay.style.pointerEvents = showOverlay && !showHighlight ? "auto" : "none";
+              mapHighlight.style.opacity = showHighlight ? "1" : "0";
+              mapHighlight.style.pointerEvents = showHighlight ? "auto" : "none";
+              if (highlight) highlight.classList.toggle("is-visible", showHighlight);
+            }
+          });
+        },
+        { root: null, threshold: 0.5 }
+      );
+      steps.forEach(step => observer.observe(step));
+
+    const quoteEnding = document.querySelector(".quote-ending");
+    const quoteSteps = document.querySelectorAll(".quote-step");
+    const ending1 = 'vote Trump."';
+    const ending2 = "that's great!\"";
+    let animVersion = 0;
+
+    function typewriterReplace(toText, onDone) {
+      const version = ++animVersion;
+      const current = quoteEnding.textContent;
+      let i = current.length;
+
+      function deleteChar() {
+        if (version !== animVersion) return;
+        if (i > 0) {
+          quoteEnding.textContent = current.slice(0, --i);
+          setTimeout(deleteChar, 40);
+        } else {
+          setTimeout(() => typeChar(0), 60);
+        }
+      }
+      function typeChar(j) {
+        if (version !== animVersion) return;
+        if (j < toText.length) {
+          quoteEnding.textContent += toText[j];
+          setTimeout(() => typeChar(j + 1), 40);
+        } else {
+          if (onDone) onDone();
+        }
+      }
+      deleteChar();
+    }
+
+    const quoteObserver = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            const showOverlay = entry.target.dataset.overlay === "on";
-            const showHighlight = entry.target.dataset.highlight === "oh09";
-
-            overlay.classList.toggle("is-visible", showOverlay);
-            highlight.classList.toggle("is-visible", showHighlight);
+          if (!entry.isIntersecting) return;
+          const state = entry.target.dataset.state;
+          if (state === "hide") {
+            quoteStickyEl.style.opacity = "0";
+            return;
+          }
+          quoteStickyEl.style.opacity = "1";
+          if (state === "q1") {
+            quoteEnding.classList.remove("underlined");
+            if (quoteEnding.textContent !== ending1) typewriterReplace(ending1);
+          } else if (state === "q2") {
+            quoteEnding.classList.remove("underlined");
+            if (quoteEnding.textContent !== ending2) typewriterReplace(ending2);
+          } else if (state === "q2-underline") {
+            if (quoteEnding.textContent !== ending2) {
+              typewriterReplace(ending2, () => setTimeout(() => quoteEnding.classList.add("underlined"), 100));
+            } else {
+              quoteEnding.classList.remove("underlined");
+              setTimeout(() => quoteEnding.classList.add("underlined"), 50);
+            }
           }
         });
       },
-      {
-        root: null,
-        threshold: 0.90
-      }
+      { threshold: 0.6 }
     );
-
-    steps.forEach(step => observer.observe(step));
+    const quoteStickyEl = document.querySelector(".quote-sticky");
+    quoteSteps.forEach(step => quoteObserver.observe(step));
+    document.querySelectorAll(".intro-step[data-state]").forEach(step => quoteObserver.observe(step));
   </script>
 
 </body>
