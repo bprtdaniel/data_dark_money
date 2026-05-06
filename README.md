@@ -1,3 +1,8 @@
+# This project is a collaboration of Daniel Boppert and Luca Vellage.
+
+
+
+
 # Dark Money and Competitive Districts
 
 This project shows a short interactive story about campaign finance, outside spending, and competitive U.S. House districts.
