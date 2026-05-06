@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dark Money and Competitive Districts</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Source+Serif+4:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Inter", Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(47, 86, 70, 0.24), transparent 34%),
+        linear-gradient(180deg, #111815 0%, #18221e 45%, #f4f1ea 100%);
+      color: #1f2421;
+    }
+
+    .title-section {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 90px 24px 30px 24px;
+      text-align: center;
+      color: #f4f1ea;
+    }
+
+    .title-section h1 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(2.4rem, 5.5vw, 4.8rem);
+      line-height: 1.02;
+      margin: 0;
+      letter-spacing: -0.04em;
+    }
+
+    .subtitle {
+      max-width: 680px;
+      margin: 18px auto 0 auto;
+      font-size: 1.05rem;
+      line-height: 1.45;
+      color: rgba(244, 241, 234, 0.82);
+    }
+
+    .intro-scrolly {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 24px 50px 24px;
+      color: #f4f1ea;
+    }
+
+    .intro-step {
+      min-height: 42vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .intro-card {
+      max-width: 680px;
+      text-align: center;
+      font-size: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .intro-card .quote {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(1.7rem, 3vw, 2.6rem);
+      line-height: 1.22;
+      font-weight: 800;
+      margin-bottom: 18px;
+      color: #ffffff;
+    }
+
+    .intro-card p {
+      margin: 0 0 14px 0;
+    }
+
+    .scrolly {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      gap: 32px;
+      padding: 40px 24px 0 24px;
+    }
+
+    .scrolly::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 24px;
+      right: 24px;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(244, 241, 234, 0.65),
+        transparent
+      );
+    }
+
+    .steps {
+      position: relative;
+      z-index: 5;
+    }
+
+    .step {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+    }
+
+    .hold-step {
+      min-height: 135vh;
+      align-items: flex-start;
+    }
+
+    .hold-step .step-card {
+      margin-top: 35vh;
+    }
+
+    .step-card {
+      background: rgba(250, 248, 241, 0.96);
+      border: 1px solid rgba(37, 64, 51, 0.22);
+      border-left: 5px solid #315f49;
+      border-radius: 12px;
+      padding: 22px 22px 20px 22px;
+      box-shadow: 0 12px 32px rgba(13, 23, 18, 0.16);
+      line-height: 1.5;
+    }
+
+    .step-label {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: #f4f1ea;
+      background: #315f49;
+      padding: 5px 9px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    .step-card h2 {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 1.45rem;
+      line-height: 1.15;
+      margin: 0 0 12px 0;
+      color: #17241d;
+      letter-spacing: -0.02em;
+    }
+
+    .step-card p {
+      margin: 0 0 12px 0;
+      color: #303832;
+    }
+
+    .map-sticky {
+      position: sticky;
+      top: 24px;
+      height: calc(100vh - 48px);
+      min-height: 620px;
+      align-self: start;
+    }
+
+    .map-frame-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(49, 95, 73, 0.32);
+      box-shadow:
+        0 18px 44px rgba(11, 19, 15, 0.24),
+        0 0 0 6px rgba(250, 248, 241, 0.18);
+
+      --overlay-x: 0px;
+      --overlay-y: -1px;
+      --overlay-scale: 1;
+    }
+
+    .dw-map {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    #map-base {
+      z-index: 1;
+    }
+
+    #map-overlay {
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 500ms ease;
+      pointer-events: none;
+      transform: translate(var(--overlay-x), var(--overlay-y)) scale(var(--overlay-scale));
+      transform-origin: center center;
+    }
+
+    #map-overlay.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .district-highlight {
+      position: absolute;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transition: opacity 500ms ease;
+    }
+
+    .district-highlight.is-visible {
+      opacity: 1;
+    }
+
+    .oh09-highlight {
+      right: 26%;
+      top: 30%;
+    }
+
+    .highlight-ring {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #315f49;
+      border-radius: 50%;
+      background: rgba(49, 95, 73, 0.08);
+      box-shadow:
+        0 0 0 6px rgba(49, 95, 73, 0.18),
+        0 0 20px rgba(49, 95, 73, 0.35);
+      animation: pulse-highlight 1.8s ease-in-out infinite;
+    }
+
+    .highlight-label {
+      background: rgba(250, 248, 241, 0.96);
+      border: 1px solid rgba(49, 95, 73, 0.35);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: #17241d;
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(11, 19, 15, 0.18);
+    }
+
+    @keyframes pulse-highlight {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.14);
+        opacity: 0.72;
+      }
+    }
+
+    .source-note {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 40px 24px 90px 24px;
+    }
+
+    .source-note p {
+      background: rgba(250, 248, 241, 0.72);
+      border-left: 4px solid #315f49;
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: rgba(31, 36, 33, 0.78);
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="title-section">
+    <h1>Which Elections Take Dark-Money?</h1>
+    <p class="subtitle">A visual look at where undisclosed political spending appeared in competitive 2024 House races.</p>
+  </section>
+
+  <section class="intro-scrolly">
+    <div class="intro-step">
+      <div class="intro-card">
+        <p class="quote">“Donald Trump will work to lower your taxes, vote Trump.”</p>
+      </div>
+    </div>
+
+    <div class="intro-step">
+      <div class="intro-card">
+        <p class="quote">“Donald Trump will work to lower your taxes, that’s great!”</p>
+      </div>
+    </div>
+
+    <div class="intro-step">
+      <div class="intro-card">
+        <p>
+          What is the difference between those sentences?
+        </p>
+        <p>
+          According to U.S. campaign finance rules, the first is a direct endorsement of a candidate,
+          making it political campaigning.
+        </p>
+        <p>
+          The second, however, can be framed as issue advocacy or “social welfare” activity rather
+          than direct candidate support.
+        </p>
+      </div>
+    </div>
+
+    <div class="intro-step">
+      <div class="intro-card">
+        <p>
+          Under U.S. tax law, a 501(c)(4) organization is a nonprofit organization operated for
+          social welfare purposes.
+        </p>
+        <p>
+          These groups can spend money in politics, but they are not required to disclose donors
+          in the same way traditional campaign committees or SuperPACs are.
+        </p>
+      </div>
+    </div>
+
+    <div class="intro-step">
+      <div class="intro-card">
+        <p>
+          They are often referred to as "Dark Money" Organizations.
+        </p>
+        <p>
+          <strong>Where is This Money Going?</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scrolly">
+    <div class="steps">
+      <div class="step" data-overlay="off">
+        <div class="step-card">
+          <div class="step-label">01</div>
+          <h2>Dark-Money Spending by Congressional District in 2024</h2>
+          <p>
+            Districts with reported dark-money spending are colored by total amount.
+          </p>
+          <p>
+            Districts without reported dark-money data remain grey.
+          </p>
+          <p>
+            The darker the distrit, the more Dark-Money was spent. Hover over the districts to find out more!
+          </p>
+        </div>
+      </div>
+
+      <div class="step" data-overlay="off">
+        <div class="step-card">
+          <div class="step-label">02</div>
+          <h2>Most districts have no reported dark-money spending</h2>
+          <p>
+            However, what if this money is spent intentionally?
+            On competitive districts that may realistically switch parties, or even tip majorities in the House?
+          </p>
+        </div>
+      </div>
+
+      <div class="step" data-overlay="on">
+        <div class="step-card">
+          <div class="step-label">03</div>
+          <h2>Competitive dark-money districts</h2>
+          <p>
+            The pattern overlay highlights districts that are both competitive and
+            had reported dark-money spending. Hover over patterned districts to see
+            their competitive category, such as Toss-up, Tilt Dem, or Leans Rep.
+          </p>
+        </div>
+      </div>
+
+      <div class="step" data-overlay="on">
+        <div class="step-card">
+          <div class="step-label">04</div>
+          <h2>Where spending overlaps with competitiveness</h2>
+          <p>
+            Out of all 98 districts that saw Dark Money spending, 29 were competitive districts.
+          </p>
+        </div>
+      </div>
+
+      <div class="step hold-step" data-overlay="on">
+        <div class="step-card">
+          <div class="step-label">05</div>
+          <h2>Dark-Money in Close Elections</h2>
+          <p>
+            As of October 31st, roughly 5 days before the election, eight districts were categorized as "Toss-Up", meaning not even a lean towards a party was identifiable, making them the closest races of all.
+            All of these eight districts saw dark money activity.
+          </p>
+        </div>
+      </div>
+
+      <div class="step" data-overlay="on" data-highlight="oh09">
+        <div class="step-card">
+          <div class="step-label">06</div>
+          <h2>Ohio’s 9th Congressional District</h2>
+          <p>
+            In an incredinly close election, incumbent Marcy Kaptur held on by about 0.7 points or roughly 2000 votes.
+            At the same time, OpenSecrets reports that 400.000 dollars of dark money were spent in OH-09.
+            Half of that is classified as "For Democrats", while the other is labelled "Against Republicans"
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="map-sticky">
+      <div class="map-frame-wrap">
+        <iframe
+          id="map-base"
+          class="dw-map"
+          title="Dark money districts"
+          src="https://datawrapper.dwcdn.net/jGCCz/4/"
+          scrolling="no"
+          frameborder="0">
+        </iframe>
+
+        <iframe
+          id="map-overlay"
+          class="dw-map"
+          title="Competitive dark-money overlay"
+          src="https://datawrapper.dwcdn.net/OUbDv/6/"
+          scrolling="no"
+          frameborder="0">
+        </iframe>
+
+        <div class="district-highlight oh09-highlight">
+          <div class="highlight-label">OH-09</div>
+          <div class="highlight-ring"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="source-note">
+    <p>Sources: OpenSecrets and Inside Elections House ratings via 270toWin as of October 31, 2024.</p>
+  </section>
+
+  <script>
+    const overlay = document.getElementById("map-overlay");
+    const highlight = document.querySelector(".oh09-highlight");
+    const steps = document.querySelectorAll(".step");
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const showOverlay = entry.target.dataset.overlay === "on";
+            const showHighlight = entry.target.dataset.highlight === "oh09";
+
+            overlay.classList.toggle("is-visible", showOverlay);
+            highlight.classList.toggle("is-visible", showHighlight);
+          }
+        });
+      },
+      {
+        root: null,
+        threshold: 0.90
+      }
+    );
+
+    steps.forEach(step => observer.observe(step));
+  </script>
+
+</body>
+</html>
