@@ -7,7 +7,7 @@ Luca: HTML, CSS styling, formatting, writing
 
 
 
-## Acces the Story [Here](https://bprtdaniel.github.io/data_dark_money/)
+## Access the Story [Here](https://bprtdaniel.github.io/data_dark_money/)
 
 # Dark Money and Competitive Districts
 
